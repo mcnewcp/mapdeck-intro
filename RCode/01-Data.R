@@ -16,16 +16,25 @@ mapSF <- dataDF %>%
   #drop coord errors (i.e. coords way outside of Nashville)
   filter(latitude > 35 & latitude < 36.7) %>%
   filter(longitude > -87.7 & longitude < -85.7) %>%
-  #it seems like there are multiple entries for a give coord at the same time
+  #it seems like there are multiple entries for a given coord at the same time
   #for the sake of geo calcs, I'm keeping one entry per coord per datetime
   distinct(incident_occurred, latitude, longitude, .keep_all = TRUE) %>%
   #make sf object
   st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
 rm(dataDF, max_dt, n, start_dt)
 
-#load Nashville census tracts
-tractSF <- readRDS(gzcon(url("https://github.com/mcnewcp/Nashville-census-tracts/blob/master/Nashville_Census_Tracts_2019.RDS?raw=true"))) %>%
+#load Nashville census polygon data
+polyLS <- readRDS(gzcon(url("https://github.com/mcnewcp/Nashville-census-tracts/blob/master/Nashville_Census_Polygons_2019.RDS?raw=true")))
+#census tracts
+tractSF <- polyLS$tract %>%
   #count points in each polygon
   mutate(incidents = lengths(st_intersects(., mapSF)))
-
-
+#census block groups
+blockgroupSF <- polyLS$block_group %>%
+  #count points in each polygon
+  mutate(incidents = lengths(st_intersects(., mapSF)))
+#census voting districts
+votingdistrictSF <- polyLS$voting_district %>%
+  #count points in each polygon
+  mutate(incidents = lengths(st_intersects(., mapSF)))
+rm(polyLS)
