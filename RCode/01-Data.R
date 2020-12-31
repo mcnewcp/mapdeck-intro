@@ -20,7 +20,9 @@ mapSF <- dataDF %>%
   #for the sake of geo calcs, I'm keeping one entry per coord per datetime
   distinct(incident_occurred, latitude, longitude, .keep_all = TRUE) %>%
   #make sf object
-  st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326) %>%
+  #make tooltip
+  mutate(tooltip = paste(incident_occurred, "<br/>", offense_description))
 rm(dataDF, max_dt, n, start_dt)
 
 #load Nashville census polygon data
@@ -28,13 +30,19 @@ polyLS <- readRDS(gzcon(url("https://github.com/mcnewcp/Nashville-census-tracts/
 #census tracts
 tractSF <- polyLS$tract %>%
   #count points in each polygon
-  mutate(incidents = lengths(st_intersects(., mapSF)))
+  mutate(incidents = lengths(st_intersects(., mapSF))) %>%
+  #make tooltip
+  mutate(tooltip = paste(name, "<br/>Incident Count:", incidents))
 #census block groups
 blockgroupSF <- polyLS$block_group %>%
   #count points in each polygon
-  mutate(incidents = lengths(st_intersects(., mapSF)))
+  mutate(incidents = lengths(st_intersects(., mapSF))) %>%
+  #make tooltip
+  mutate(tooltip = paste(name, "<br/>Incident Count:", incidents))
 #census voting districts
 votingdistrictSF <- polyLS$voting_district %>%
   #count points in each polygon
-  mutate(incidents = lengths(st_intersects(., mapSF)))
+  mutate(incidents = lengths(st_intersects(., mapSF))) %>%
+  #make tooltip
+  mutate(tooltip = paste(name, "<br/>Incident Count:", incidents))
 rm(polyLS)

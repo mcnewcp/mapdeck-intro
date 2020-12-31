@@ -15,6 +15,7 @@ mapdeck(token = mapdeck_key, style = mapdeck_style('dark'), pitch = 45 ) %>%
     data = mapSF
 )
 
+#points
 mapdeck(token = mapdeck_key, style = mapdeck_style('dark'), pitch = 45) %>%
   add_polygon(
     data = tractSF,
@@ -25,5 +26,32 @@ mapdeck(token = mapdeck_key, style = mapdeck_style('dark'), pitch = 45) %>%
     data = mapSF,
     fill_colour = "#FFFFFF",
     radius = 150,
-    tooltip = "offense_description"
+    tooltip = "tooltip"
   )
+
+#3d aggregations
+mapdeck(token = mapdeck_key, style = mapdeck_style('dark'), pitch = 45) %>%
+  add_polygon(
+    data = tractSF,
+    fill_colour = "incidents", fill_opacity = 0.5,
+    elevation = "incidents", elevation_scale = 30,
+    tooltip = "tooltip"
+) 
+mapdeck(token = mapdeck_key, style = mapdeck_style('dark'), pitch = 45) %>%
+  add_polygon(
+    data = blockgroupSF,
+    fill_colour = "incidents", fill_opacity = 0.5,
+    elevation = "incidents", elevation_scale = 30,
+    tooltip = "tooltip"
+) 
+mapdeck(token = mapdeck_key, style = mapdeck_style('dark'), pitch = 45) %>%
+  add_polygon(
+    data = votingdistrictSF,
+    fill_colour = "incidents", fill_opacity = 0.5,
+    elevation = "incidents", elevation_scale = 30,
+    tooltip = "tooltip", 
+    legend = TRUE,
+    legend_options = list(
+      fill_colour = list(title = "Incident <br/>Count", digits = 0)
+    )
+) 
