@@ -44,7 +44,10 @@ mapdeck(token = mapdeck_key, style = mapdeck_style('dark'), pitch = 45) %>%
     elevation = "incidents", elevation_scale = 30,
     tooltip = "tooltip"
 ) 
-mapdeck(token = mapdeck_key, style = mapdeck_style('dark'), pitch = 45) %>%
+mapdeck(
+  token = mapdeck_key, style = mapdeck_style('dark'), pitch = 45, 
+  location = c(-86.77644756173848, 36.164626527074354), zoom = 9.5
+) %>%
   add_polygon(
     data = votingdistrictSF,
     fill_colour = "incidents", fill_opacity = 0.5,
@@ -53,5 +56,6 @@ mapdeck(token = mapdeck_key, style = mapdeck_style('dark'), pitch = 45) %>%
     legend = TRUE,
     legend_options = list(
       fill_colour = list(title = "Incident <br/>Count", digits = 0)
-    )
+    ),
+    update_view = FALSE
 ) 
